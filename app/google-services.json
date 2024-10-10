@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "349940994673",
+    "project_id": "nove-10122",
+    "storage_bucket": "nove-10122.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:349940994673:android:8f1fdef28f2758d57641d0",
+        "android_client_info": {
+          "package_name": "com.example.novelasnuevo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJM7D_beHTN1GFtY5LZhDRabN2HeO_Vj4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
