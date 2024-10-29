@@ -24,22 +24,6 @@ Este proyecto es una aplicación de Android que permite gestionar una colección
 - Kotlin
 - Firebase Firestore
 
-## Configuración del Proyecto
-
-1. Clona el repositorio:
-    ```sh
-    git clone https://github.com/HugoSanchezGallego/NovelasNuevo.git
-    cd NovelasNuevo
-    ```
-
-2. Abre el proyecto en Android Studio.
-
-3. Configura Firebase:
-    - Añade el archivo `google-services.json` en la carpeta `app`.
-    - Asegúrate de tener las dependencias de Firebase en el archivo `build.gradle.kts`.
-
-4. Sincroniza el proyecto con Gradle.
-
 ## Uso
 
 1. Ejecuta la aplicación en un dispositivo o emulador Android.
@@ -53,10 +37,18 @@ Este proyecto es una aplicación de Android que permite gestionar una colección
 - `DetallesNovelaScreen.kt`: Composable que muestra los detalles de una novela.
 - `AddNovelaDialog.kt`: Composable que permite añadir una nueva novela.
 
-## Contribuciones
+## Nuevos Cambios
 
-Las contribuciones son bienvenidas. Por favor, abre un issue o un pull request para discutir cualquier cambio que desees realizar.
+### Añadido
 
-## Licencia
+- **DetallesNovelaScreen.kt**: Se añadió la funcionalidad para eliminar novelas de Firebase y actualizar la lista de novelas en la pantalla principal.
+- **SettingsScreen.kt**: Se añadió una pantalla de configuración que permite cambiar el tema de la aplicación (claro/oscuro).
+- **AuthScreen.kt**: Se añadió una pantalla de autenticación para iniciar sesión y registrarse.
+- **PreferencesManager.kt**: Se añadió una clase para manejar las preferencias del usuario, como el tema de la aplicación.
 
-Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+### Cambiado
+
+- **MainActivity.kt**: Se actualizó para integrar las nuevas pantallas de configuración y autenticación.
+- **MainScreen.kt**: Se actualizó para manejar la eliminación de novelas y la actualización de la lista de novelas.
+- **build.gradle.kts**: Se añadieron las dependencias necesarias para Firebase y se configuró el proyecto para usar Compose.
+- **AndroidManifest.xml**: Se actualizó para incluir las nuevas actividades y configuraciones necesarias para Firebase.
