@@ -28,11 +28,14 @@ fun ListaNovelasScreen(novelas: List<Novela>, onNovelaClick: (Novela) -> Unit) {
 
 @Composable
 fun NovelaItem(novela: Novela, onNovelaClick: (Novela) -> Unit) {
+    val backgroundColor = if (novela.esFavorita) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .clickable { onNovelaClick(novela) },
+        colors = CardDefaults.cardColors(containerColor = backgroundColor),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {

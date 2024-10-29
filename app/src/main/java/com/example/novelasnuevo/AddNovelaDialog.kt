@@ -9,7 +9,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AddNovelaDialog(onDismiss: () -> Unit, onAdd: (Novela) -> Unit) {
+fun AddNovelaDialog(onDismiss: () -> Unit, onAdd: (Novela) -> Unit, onVolver: () -> Unit) {
     var titulo by remember { mutableStateOf("") }
     var autor by remember { mutableStateOf("") }
     var anoPublicacion by remember { mutableStateOf("") }
@@ -41,12 +41,23 @@ fun AddNovelaDialog(onDismiss: () -> Unit, onAdd: (Novela) -> Unit) {
                     onValueChange = { sinopsis = it },
                     label = { Text("Sinopsis") }
                 )
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Button(onClick = onVolver) {
+                        Text("Volver a la Lista")
+                    }
+                }
             }
         },
         confirmButton = {
             Button(onClick = {
                 val nuevaNovela = Novela(
-                    id = (1..1000).random(), // Generar un ID aleatorio
+                    id = (1..1000).random(),
                     titulo = titulo,
                     autor = autor,
                     anoPublicacion = anoPublicacion.toIntOrNull() ?: 0,

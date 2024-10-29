@@ -7,5 +7,6 @@ data class Novela(
     val anoPublicacion: Int = 0,
     val sinopsis: String = "",
     var esFavorita: Boolean = false,
-    val resenas: MutableList<String> = mutableListOf()
+    val resenas: MutableList<String> = mutableListOf(),
+    val username: String = ""
 )

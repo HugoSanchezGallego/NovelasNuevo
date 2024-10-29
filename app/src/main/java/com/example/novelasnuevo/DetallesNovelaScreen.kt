@@ -10,7 +10,8 @@ import androidx.compose.ui.unit.dp
 fun DetallesNovelaScreen(
     novela: Novela,
     onMarcarFavorita: (Novela) -> Unit,
-    onEliminarNovela: (Novela) -> Unit
+    onEliminarNovela: (Novela) -> Unit,
+    onVolver: () -> Unit
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = novela.titulo, style = MaterialTheme.typography.headlineMedium)
@@ -23,6 +24,10 @@ fun DetallesNovelaScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = { onEliminarNovela(novela) }) {
             Text("Eliminar Novela")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onVolver) {
+            Text("Volver a la Lista")
         }
     }
 }
