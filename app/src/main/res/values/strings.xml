@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">NovelasNuevo</string>
+    <string name="novelas_widget_description">Novelas Widget</string>
 </resources>
