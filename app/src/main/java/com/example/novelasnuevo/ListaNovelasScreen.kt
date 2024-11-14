@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.ui.Alignment
 import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
@@ -83,6 +84,7 @@ fun NovelaDetailsDialog(
     onEliminarNovela: (Novela) -> Unit
 ) {
     val db = FirebaseFirestore.getInstance()
+    var isFavorita by remember { mutableStateOf(novela.esFavorita) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -92,21 +94,25 @@ fun NovelaDetailsDialog(
                 Text(text = "Autor: ${novela.autor}", style = MaterialTheme.typography.bodyLarge)
                 Text(text = "Año: ${novela.anoPublicacion}", style = MaterialTheme.typography.bodyLarge)
                 Text(text = "Sinopsis: ${novela.sinopsis}", style = MaterialTheme.typography.bodyLarge)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(
+                        checked = isFavorita,
+                        onCheckedChange = { checked ->
+                            isFavorita = checked
+                            val updatedNovela = novela.copy(esFavorita = checked)
+                            db.collection("novelas").document(novela.id.toString())
+                                .update("esFavorita", checked)
+                                .addOnSuccessListener {
+                                    onMarcarFavorita(updatedNovela)
+                                }
+                        }
+                    )
+                    Text(text = if (isFavorita) "Favorita" else "No Favorita")
+                }
             }
         },
         confirmButton = {
             Column {
-                Button(onClick = {
-                    val newFavoritaStatus = !novela.esFavorita
-                    db.collection("novelas").document(novela.id.toString())
-                        .update("esFavorita", newFavoritaStatus)
-                        .addOnSuccessListener {
-                            onMarcarFavorita(novela.copy(esFavorita = newFavoritaStatus))
-                        }
-                }) {
-                    Text(text = if (novela.esFavorita) "Desmarcar Favorita" else "Marcar Favorita")
-                }
-                Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = { onEliminarNovela(novela) }) {
                     Text("Eliminar Novela")
                 }

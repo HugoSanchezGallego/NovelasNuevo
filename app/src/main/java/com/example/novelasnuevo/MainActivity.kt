@@ -103,12 +103,12 @@ fun MainScreen(db: FirebaseFirestore, username: String, onSettingsClick: () -> U
             )
         }
     } else {
-        DetallesNovelaScreen(
+        NovelaDetailsDialog(
             novela = selectedNovela!!,
-            onMarcarFavorita = { novela ->
-                val newFavoritaStatus = !novela.esFavorita
-                db.collection("novelas").document(novela.id.toString())
-                    .update("esFavorita", newFavoritaStatus)
+            onDismiss = { selectedNovela = null },
+            onMarcarFavorita = { updatedNovela ->
+                db.collection("novelas").document(updatedNovela.id.toString())
+                    .update("esFavorita", updatedNovela.esFavorita)
                     .addOnSuccessListener {
                         selectedNovela = null
                     }
@@ -124,9 +124,7 @@ fun MainScreen(db: FirebaseFirestore, username: String, onSettingsClick: () -> U
                         novelas = novelas.filter { it.id != novela.id }
                         selectedNovela = null
                     }
-            },
-            onVolver = { selectedNovela = null }
+            }
         )
     }
 }
-
