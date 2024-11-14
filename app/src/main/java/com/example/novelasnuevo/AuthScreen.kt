@@ -1,9 +1,12 @@
+// AuthScreen.kt
 package com.example.novelasnuevo
 
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,7 +17,7 @@ fun AuthScreen(onAuthSuccess: (String) -> Unit) {
     var password by remember { mutableStateOf("") }
     var isLogin by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
-
+    val context = LocalContext.current
     val db = FirebaseFirestore.getInstance()
 
     MaterialTheme(colorScheme = lightColorScheme()) {
@@ -48,6 +51,7 @@ fun AuthScreen(onAuthSuccess: (String) -> Unit) {
                             db.collection("users").document(username).get()
                                 .addOnSuccessListener { document ->
                                     if (document.exists() && document.getString("password") == password) {
+                                        saveUsernameToPreferences(context, username)
                                         onAuthSuccess(username)
                                     } else {
                                         errorMessage = "Nombre de usuario o contraseña inválidos"
@@ -65,6 +69,7 @@ fun AuthScreen(onAuthSuccess: (String) -> Unit) {
                                         )
                                         db.collection("users").document(username).set(user)
                                             .addOnSuccessListener {
+                                                saveUsernameToPreferences(context, username)
                                                 onAuthSuccess(username)
                                             }
                                             .addOnFailureListener { e ->
@@ -88,5 +93,13 @@ fun AuthScreen(onAuthSuccess: (String) -> Unit) {
                 }
             }
         }
+    }
+}
+
+fun saveUsernameToPreferences(context: Context, username: String) {
+    val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+    with(sharedPreferences.edit()) {
+        putString("authenticated_user", username)
+        apply()
     }
 }
