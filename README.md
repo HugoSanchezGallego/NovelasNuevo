@@ -10,6 +10,8 @@ Por lo tanto cree otro proyecto desde 0 con implementaciones muy básicas pero q
 
 Seguiré tratando de recuperar lo que hice para la primera práctica pero de momento para la fecha de hoy he tenido que hacer este repositorio, en cuanto consiga enlazar la primera práctica con firebase y que mi ordenador pueda ejecutarla adecuadamente modificaré el README de esta práctica con el enlace del repositorio arreglado.
 
+-**ACTUALIZACIÓN**: Ya está solucionado el error del anterior repositorio de la primera entrega, como ya te dije en el correo que te envié, se debía a que la carpeta "res" no se había subido en github por un conflicto en el .gitignore. De todas formas, seguiré en este repositorio ya que he ido haciendo todas las entregas aquí y el anterior está obsoleto, ya que no esta ni conectado con Firebase
+
 ## Descripción del Proyecto
 
 Este proyecto es una aplicación de Android que permite gestionar una colección de novelas. Las funcionalidades principales incluyen:
@@ -52,3 +54,16 @@ Este proyecto es una aplicación de Android que permite gestionar una colección
 - **MainScreen.kt**: Se actualizó para manejar la eliminación de novelas y la actualización de la lista de novelas.
 - **build.gradle.kts**: Se añadieron las dependencias necesarias para Firebase y se configuró el proyecto para usar Compose.
 - **AndroidManifest.xml**: Se actualizó para incluir las nuevas actividades y configuraciones necesarias para Firebase.
+
+### Más cambios
+
+- **DetallesNovelaScreen.kt**: Se añadió la funcionalidad para eliminar novelas de Firebase y actualizar la lista de novelas en la pantalla principal.
+- **SettingsScreen.kt**: Se añadió una pantalla de configuración que permite cambiar el tema de la aplicación (claro/oscuro).
+- **AuthScreen.kt**: Se añadió una pantalla de autenticación para iniciar sesión y registrarse.
+- **PreferencesManager.kt**: Se añadió una clase para manejar las preferencias del usuario, como el tema de la aplicación.
+- **NovelasWidgetConfigurationActivity.kt**: Se añadió una actividad para configurar el widget.
+- **NovelasWidgetProvider.kt**: Se añadió un proveedor de widget para actualizar el widget cada 3 segundos.
+- **novelas_widget.xml**: Se añadió un layout para el widget.
+- **novelas_widget_configure.xml**: Se añadió un layout para la configuración del widget.
+- **novelas_widget_preview.xml**: Se añadió un layout de vista previa para el widget.
+- **novelas_widget_info.xml**: Se añadió un archivo de configuración para el widget.
