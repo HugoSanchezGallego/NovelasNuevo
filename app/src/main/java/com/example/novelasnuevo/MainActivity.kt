@@ -12,9 +12,20 @@ import androidx.compose.ui.unit.dp
 import com.example.novelasnuevo.ui.theme.NovelasNuevoTheme
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
+import okhttp3.OkHttpClient
+import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
     private lateinit var db: FirebaseFirestore
+    private val client = OkHttpClient.Builder()
+        .addInterceptor { chain ->
+            val originalRequest = chain.request()
+            val compressedRequest = originalRequest.newBuilder()
+                .header("Content-Encoding", "gzip")
+                .build()
+            chain.proceed(compressedRequest)
+        }
+        .build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
