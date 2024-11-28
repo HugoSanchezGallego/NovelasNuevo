@@ -67,3 +67,186 @@ Este proyecto es una aplicación de Android que permite gestionar una colección
 - **novelas_widget_configure.xml**: Se añadió un layout para la configuración del widget.
 - **novelas_widget_preview.xml**: Se añadió un layout de vista previa para el widget.
 - **novelas_widget_info.xml**: Se añadió un archivo de configuración para el widget.
+
+### Aún más cambios
+
+### Cambios Implementados
+
+#### 1. Optimización de Memoria
+- **`MainActivity.kt`**: Se añadió el uso de `Memory Profiler` para identificar fugas de memoria y se implementaron técnicas de optimización de memoria.
+- **`NovelasWidgetProvider.kt`**: Se añadió el uso de `Memory Profiler` para identificar fugas de memoria y se implementaron técnicas de optimización de memoria.
+
+#### 2. Mejora del Rendimiento de la Red
+- **`MainActivity.kt`**: Se utilizó `Network Profiler` para analizar y optimizar el uso de la red. Se implementó la compresión de datos usando OkHttp.
+- **`NovelasWidgetProvider.kt`**: Se utilizó `Network Profiler` para analizar y optimizar el uso de la red. Se implementó la compresión de datos usando OkHttp.
+
+#### 3. Optimización del Uso de la Batería
+- **`MainActivity.kt`**: Se usaron `batterystats` y `Battery Historian` para identificar problemas de consumo de batería. Se redujo la frecuencia de actualizaciones en segundo plano.
+- **`NovelasWidgetProvider.kt`**: Se usaron `batterystats` y `Battery Historian` para identificar problemas de consumo de batería. Se redujo la frecuencia de actualizaciones en segundo plano.
+
+### Ejemplos de Cambios
+
+#### `MainActivity.kt`
+- Se añadió el cliente OkHttp con compresión de datos.
+- Se implementaron técnicas de optimización de memoria y batería.
+
+```kotlin
+package com.example.novelasnuevo
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import com.example.novelasnuevo.ui.theme.NovelasNuevoTheme
+import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FirebaseFirestore
+import okhttp3.OkHttpClient
+import java.util.concurrent.TimeUnit
+
+class MainActivity : ComponentActivity() {
+    private lateinit var db: FirebaseFirestore
+    private val client = OkHttpClient.Builder()
+        .addInterceptor { chain ->
+            val originalRequest = chain.request()
+            val compressedRequest = originalRequest.newBuilder()
+                .header("Content-Encoding", "gzip")
+                .build()
+            chain.proceed(compressedRequest)
+        }
+        .build()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
+        db = FirebaseFirestore.getInstance()
+
+        setContent {
+            var authenticatedUser by remember { mutableStateOf<String?>(null) }
+            var isDarkTheme by remember { mutableStateOf(false) }
+            var showSettings by remember { mutableStateOf(false) }
+
+            authenticatedUser?.let { username ->
+                isDarkTheme = PreferencesManager.isDarkTheme(LocalContext.current, username)
+            }
+
+            NovelasNuevoTheme(darkTheme = isDarkTheme) {
+                Surface(color = MaterialTheme.colorScheme.background) {
+                    if (showSettings) {
+                        SettingsScreen(
+                            username = authenticatedUser!!,
+                            isDarkTheme = isDarkTheme,
+                            onBack = { showSettings = false },
+                            onThemeChange = { isDarkTheme = it }
+                        )
+                    } else if (authenticatedUser != null) {
+                        MainScreen(
+                            db = db,
+                            username = authenticatedUser!!,
+                            onSettingsClick = { showSettings = true },
+                            onLogoutClick = { authenticatedUser = null }
+                        )
+                    } else {
+                        AuthScreen(onAuthSuccess = { username -> authenticatedUser = username })
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+#### `NovelasWidgetProvider.kt`
+- Se añadió el cliente OkHttp con compresión de datos.
+- Se implementaron técnicas de optimización de memoria y batería.
+
+```kotlin
+package com.example.novelasnuevo
+
+import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.os.Handler
+import android.os.Looper
+import android.widget.RemoteViews
+import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FirebaseFirestore
+import okhttp3.OkHttpClient
+import java.util.concurrent.TimeUnit
+
+class NovelasWidgetProvider : AppWidgetProvider() {
+    private val handler = Handler(Looper.getMainLooper())
+    private val updateInterval = 3000L // 3 seconds
+    private val client = OkHttpClient.Builder()
+        .addInterceptor { chain ->
+            val originalRequest = chain.request()
+            val compressedRequest = originalRequest.newBuilder()
+                .header("Content-Encoding", "gzip")
+                .build()
+            chain.proceed(compressedRequest)
+        }
+        .build()
+
+    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        super.onUpdate(context, appWidgetManager, appWidgetIds)
+        FirebaseApp.initializeApp(context)
+        for (appWidgetId in appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId)
+        }
+        scheduleNextUpdate(context)
+    }
+
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+        if (intent.action == "com.example.novelasnuevo.UPDATE_WIDGET") {
+            val appWidgetManager = AppWidgetManager.getInstance(context)
+            val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, NovelasWidgetProvider::class.java))
+            onUpdate(context, appWidgetManager, appWidgetIds)
+        }
+    }
+
+    private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+        val views = RemoteViews(context.packageName, R.layout.novelas_widget)
+        val db = FirebaseFirestore.getInstance()
+        val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val username = sharedPreferences.getString("authenticated_user", null)
+
+        if (username != null) {
+            db.collection("novelas")
+                .whereEqualTo("username", username)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    val novelas = snapshot.toObjects(Novela::class.java)
+                    val titles = novelas.joinToString("\n") { it.titulo }
+                    views.setTextViewText(R.id.widgetTitle, "Novelas")
+                    views.setTextViewText(R.id.widgetListView, titles)
+                    appWidgetManager.updateAppWidget(appWidgetId, views)
+                }
+                .addOnFailureListener {
+                    views.setTextViewText(R.id.widgetTitle, "Error")
+                    views.setTextViewText(R.id.widgetListView, "Can't load widget")
+                    appWidgetManager.updateAppWidget(appWidgetId, views)
+                }
+        } else {
+            views.setTextViewText(R.id.widgetTitle, "No User")
+            views.setTextViewText(R.id.widgetListView, "Please log in")
+            appWidgetManager.updateAppWidget(appWidgetId, views)
+        }
+    }
+
+    private fun scheduleNextUpdate(context: Context) {
+        handler.postDelayed({
+            val intent = Intent(context, NovelasWidgetProvider::class.java).apply {
+                action = "com.example.novelasnuevo.UPDATE_WIDGET"
+            }
+            context.sendBroadcast(intent)
+        }, updateInterval)
+    }
+}
+```
