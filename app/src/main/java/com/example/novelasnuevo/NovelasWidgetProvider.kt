@@ -1,4 +1,3 @@
-// NovelasWidgetProvider.kt
 package com.example.novelasnuevo
 
 import android.appwidget.AppWidgetManager
@@ -11,10 +10,21 @@ import android.os.Looper
 import android.widget.RemoteViews
 import com.google.firebase.FirebaseApp
 import com.google.firebase.firestore.FirebaseFirestore
+import okhttp3.OkHttpClient
+import java.util.concurrent.TimeUnit
 
 class NovelasWidgetProvider : AppWidgetProvider() {
     private val handler = Handler(Looper.getMainLooper())
     private val updateInterval = 3000L // 3 seconds
+    private val client = OkHttpClient.Builder()
+        .addInterceptor { chain ->
+            val originalRequest = chain.request()
+            val compressedRequest = originalRequest.newBuilder()
+                .header("Content-Encoding", "gzip")
+                .build()
+            chain.proceed(compressedRequest)
+        }
+        .build()
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
