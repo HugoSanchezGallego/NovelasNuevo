@@ -11,8 +11,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.google.firebase.firestore.FirebaseFirestore
 
+// AuthScreen.kt
 @Composable
-fun AuthScreen(onAuthSuccess: (String) -> Unit) {
+fun AuthScreen(onAuthSuccess: (String, String) -> Unit) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isLogin by remember { mutableStateOf(true) }
@@ -52,7 +53,7 @@ fun AuthScreen(onAuthSuccess: (String) -> Unit) {
                                 .addOnSuccessListener { document ->
                                     if (document.exists() && document.getString("password") == password) {
                                         saveUsernameToPreferences(context, username)
-                                        onAuthSuccess(username)
+                                        onAuthSuccess(username, password)
                                     } else {
                                         errorMessage = "Nombre de usuario o contraseña inválidos"
                                     }
@@ -70,7 +71,7 @@ fun AuthScreen(onAuthSuccess: (String) -> Unit) {
                                         db.collection("users").document(username).set(user)
                                             .addOnSuccessListener {
                                                 saveUsernameToPreferences(context, username)
-                                                onAuthSuccess(username)
+                                                onAuthSuccess(username, password)
                                             }
                                             .addOnFailureListener { e ->
                                                 errorMessage = e.message
