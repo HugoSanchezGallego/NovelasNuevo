@@ -1,5 +1,6 @@
 package com.example.novelasnuevo
 
+import Novela
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
@@ -138,15 +139,16 @@ fun MainScreen(
         }
 
         if (showDialog) {
-            AddNovelaDialog(
-                onDismiss = { showDialog = false },
-                onAdd = { nuevaNovela ->
-                    db.collection("novelas").add(nuevaNovela.copy(username = username))
-                    showDialog = false
-                },
-                onVolver = { showDialog = false }
-            )
-        }
+    AddNovelaDialog(
+        username = username,
+        onDismiss = { showDialog = false },
+        onAdd = { nuevaNovela ->
+            db.collection("novelas").add(nuevaNovela.copy(username = username))
+            showDialog = false
+        },
+        onVolver = { showDialog = false }
+    )
+}
     } else {
         NovelaDetailsDialog(
             novela = selectedNovela!!,

@@ -1,5 +1,8 @@
 package com.example.novelasnuevo
 
+import Novela
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
@@ -85,6 +89,7 @@ fun NovelaDetailsDialog(
 ) {
     val db = FirebaseFirestore.getInstance()
     var isFavorita by remember { mutableStateOf(novela.esFavorita) }
+    val context = LocalContext.current
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -108,6 +113,18 @@ fun NovelaDetailsDialog(
                         }
                     )
                     Text(text = if (isFavorita) "Favorita" else "No Favorita")
+                }
+                novela.latitude?.let { lat ->
+                    novela.longitude?.let { lon ->
+                        Button(onClick = {
+                            val uri = "geo:0,0?q=$lat,$lon"
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+                            intent.setPackage("com.google.android.apps.maps")
+                            context.startActivity(intent)
+                        }) {
+                            Text("Ver Ubicación")
+                        }
+                    }
                 }
             }
         },
