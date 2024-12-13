@@ -250,3 +250,33 @@ class NovelasWidgetProvider : AppWidgetProvider() {
     }
 }
 ```
+### Cambios ejercicio 6
+
+#### 1. Autenticación de Usuario
+- Se ha actualizado `AuthScreen` para que después de autentificarse se guarde la ubicación del usuario.
+
+#### 2. Manejo de Sesión
+- `MainActivity` ahora maneja la autenticación del usuario y pasa el nombre de usuario y la contraseña a `MainScreen`.
+
+#### 3. Creación de Novelas
+- Se ha añadido la funcionalidad para guardar la ubicación del usuario al crear una novela en `AddNovelaDialog`.
+- `AddNovelaDialog` ahora obtiene la ubicación del usuario desde Firebase y la guarda junto con la novela.
+
+#### 4. Detalles de Novelas
+- Se ha añadido un botón en `NovelaDetailsDialog` para ver la ubicación donde se creó la novela en Google Maps.
+
+#### 5. Actualización de la Clase `Novela`
+- La clase `Novela` ahora incluye los campos `latitude` y `longitude` para almacenar la ubicación.
+
+#### 6. Permisos de Ubicación
+- Se han añadido los permisos `ACCESS_FINE_LOCATION` y `ACCESS_COARSE_LOCATION` en `AndroidManifest.xml`.
+
+#### 7. Corrección de Errores
+- Se ha corregido el error "No value passed for parameter 'username'" al llamar a `AddNovelaDialog`.
+
+### Funcionalidades Añadidas
+
+- **Autenticación de Usuario**: Manejo de sesión y autenticación de usuario.
+- **Creación de Novelas con Ubicación**: Guardar la ubicación del usuario al crear una novela.
+- **Visualización de Ubicación**: Ver la ubicación de la creación de la novela en Google Maps desde los detalles de la novela.
+- **Visualización de Ubicación Actual**: Ver la ubicación actual del usuario tras iniciar sesión en la aplicación.
