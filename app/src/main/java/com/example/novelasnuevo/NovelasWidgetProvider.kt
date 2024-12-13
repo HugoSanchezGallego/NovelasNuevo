@@ -1,5 +1,6 @@
 package com.example.novelasnuevo
 
+import Novela
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
